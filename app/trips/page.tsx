@@ -1,9 +1,15 @@
 import { auth } from "@/auth";
 import { Button } from "@/components/ui/button";
+import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 
 const TripsPage = async () => {
   const session = await auth();
+  const trips = await prisma.trip.findMany({
+    where: {
+      userId: session?.user?.id,
+    },
+  });
 
   if (!session) {
     return (
@@ -13,12 +19,14 @@ const TripsPage = async () => {
     );
   }
 
-  return <div className="space-y-6 container mx-auto px-4 py-8">
-    <h1>Dashboard</h1>
-    <Link href='/trips/new'>
-    <Button className="cursor-pointer">New Trips</Button>
-    </Link>
-  </div>;
+  return (
+    <div className="space-y-6 container mx-auto px-4 py-8">
+      <h1>Dashboard</h1>
+      <Link href="/trips/new">
+        <Button className="cursor-pointer">New Trips here </Button>
+      </Link>
+    </div>
+  );
 };
 
 export default TripsPage;
